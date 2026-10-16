@@ -1,0 +1,9 @@
+import { useState, type FormEvent } from 'react';
+import type { DevelopmentProject } from '../data/dashboard';
+import { useUser, initials, rolePermissions, permissionLabels } from '../state/UserContext';
+import { useProjectActions } from '../state/useProjectActions';
+export default function ProjectTeam({project}:{project:DevelopmentProject}){
+ const {users,can}=useUser();const save=useProjectActions();const [selected,setSelected]=useState('');
+ function add(event:FormEvent){event.preventDefault();const user=users.find(item=>item.id===selected);if(user&&can('manageUsers')){save({...project,members:[...project.members,user.name]},project);setSelected('');}}
+ return <section className="section-block"><div className="section-heading"><div><h2>Team <span className="count-label">{project.members.length}</span></h2><p>Workspace roles and permissions for this collection.</p></div></div><div className="team-grid">{project.members.map(name=>{const user=users.find(item=>item.name===name);const role=user?.role??'Viewer';return <article className="team-card" key={name}><div className="team-person"><span className="avatar">{initials(name)}</span><div><h3>{name}</h3><span className={`role-badge ${role.toLowerCase()}`}>{role}</span></div></div>{!user&&<p className="field-help">Unregistered sample member · view-only</p>}<ul>{rolePermissions[role].map(permission=><li key={permission}>{permissionLabels[permission]}</li>)}</ul></article>;})}</div>{can('manageUsers')&&<form className="team-add" onSubmit={add}><label>Add team member<select aria-label="Add team member" required value={selected} onChange={event=>setSelected(event.target.value)}><option value="">Choose a workspace user</option>{users.filter(user=>!project.members.includes(user.name)).map(user=><option value={user.id} key={user.id}>{user.name} · {user.role}</option>)}</select></label><button className="secondary-button" disabled={!selected}>Add to Team</button></form>}</section>;
+}
