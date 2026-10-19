@@ -16,7 +16,7 @@ npm run build
 npm run preview
 ```
 
-The development server binds to all interfaces. For production hosting, configure an SPA fallback to `index.html` so direct navigation to routes works.
+The development server binds to all interfaces. Production assets target `/ColorCosmetic/` for GitHub Pages. Hash routing keeps shared links and reloads working without a server rewrite (for example, `/ColorCosmetic/#/colors`).
 
 ## Structure
 
@@ -43,3 +43,11 @@ Reports generates a snapshot of a selected project and all its associated colors
 ## Presentation system and review
 
 `src/design-system.css` defines shared type, color, radius, surface, focus, and spacing treatments across the application; component geometry and print layouts remain in `src/styles.css`. Keep future presentation changes aligned with these tokens. Navigation includes linked breadcrumbs, keyboard-accessible mobile controls, and a skip-to-content link. The dashboard links to collection and color details, and empty states describe the next available action. Old placeholder data/components have been removed so active pages share the same workspace records. The polish review covered all primary and missing-record routes, desktop/tablet/mobile sizes, modal forms, the project-to-report workflow, role restrictions, image persistence and storage errors, and printable reports.
+
+## Publish on GitHub Pages
+
+The deployment workflow is `.github/workflows/deploy-pages.yml`. In the GitHub repository, open **Settings → Pages** and choose **GitHub Actions** as the source. Pushes to `main` will build and publish the website. You can also open **Actions → Deploy Color Cosmetics to GitHub Pages → Run workflow**. If a deployment failed before Pages was enabled, enable it and rerun the workflow.
+
+Expected website: https://seanwalborn.github.io/ColorCosmetic/
+
+To preview the production build locally, run `npm run build` and `npm run preview`, then open the printed URL (normally `http://localhost:4173/ColorCosmetic/`). No secrets or backend are required for deployment. Local browser data is not shared between visitors. Demo user switching is a simulation; the site does not provide real authentication.
